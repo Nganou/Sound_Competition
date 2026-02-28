@@ -1,0 +1,147 @@
+// ── Design tokens ────────────────────────────────────────────────────────────
+:root {
+  --color-bg-primary:      #0A0A0F;
+  --color-bg-surface:      #13131A;
+  --color-bg-elevated:     #1C1C28;
+  --color-bg-hover:        #232336;
+  --color-accent-primary:  #7C3AED;   // electric purple — brand
+  --color-accent-hot:      #F43F5E;   // like / vote red
+  --color-accent-gold:     #F59E0B;   // winner / trophy
+  --color-accent-green:    #10B981;   // success / unique badge
+  --color-text-primary:    #F8FAFC;
+  --color-text-secondary:  #94A3B8;
+  --color-text-muted:      #475569;
+  --color-border:          #1E2130;
+  --radius-card:           16px;
+  --radius-chip:           24px;
+  --radius-button:         12px;
+  --bottom-nav-height:     64px;
+  --safe-area-bottom:      env(safe-area-inset-bottom, 0px);
+}
+
+// ── Base reset ────────────────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+// ── Angular Material dark theme override ──────────────────────────────────────
+@use '@angular/material' as mat;
+
+$purple-palette: (
+  50:  #ede9fe, 100: #ddd6fe, 200: #c4b5fd, 300: #a78bfa,
+  400: #8b5cf6, 500: #7C3AED, 600: #7c3aed, 700: #6d28d9,
+  800: #5b21b6, 900: #4c1d95,
+  contrast: (500: white, 600: white, 700: white)
+);
+
+$sc-primary:   mat.m2-define-palette(mat.$violet-palette, 500);
+$sc-accent:    mat.m2-define-palette(mat.$pink-palette, A200);
+$sc-warn:      mat.m2-define-palette(mat.$red-palette);
+
+$sc-dark-theme: mat.m2-define-dark-theme((
+  color: (primary: $sc-primary, accent: $sc-accent, warn: $sc-warn)
+));
+
+@include mat.all-component-themes($sc-dark-theme);
+
+// ── Cards ─────────────────────────────────────────────────────────────────────
+.sc-card {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  padding: 16px;
+  transition: background 0.15s ease;
+
+  &:hover { background: var(--color-bg-hover); }
+}
+
+// ── Waveform container ────────────────────────────────────────────────────────
+.waveform-container {
+  width: 100%;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+// ── Tags / Chips ──────────────────────────────────────────────────────────────
+.sc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-chip);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover, &.active {
+    background: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
+  }
+}
+
+// ── Like button ───────────────────────────────────────────────────────────────
+.sc-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s;
+
+  &.liked, &:hover {
+    color: var(--color-accent-hot);
+  }
+}
+
+// ── Vote bar ──────────────────────────────────────────────────────────────────
+.vote-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-bg-elevated);
+  overflow: hidden;
+  display: flex;
+
+  .vote-a { background: var(--color-accent-primary); transition: width 0.3s ease; }
+  .vote-b { background: var(--color-accent-hot); transition: width 0.3s ease; }
+}
+
+// ── Fingerprint status badges ─────────────────────────────────────────────────
+.fp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: var(--radius-chip);
+  font-size: 11px;
+  font-weight: 600;
+
+  &.pending  { background: #1E2130; color: var(--color-text-secondary); }
+  &.unique   { background: rgba(16,185,129,.15); color: var(--color-accent-green); }
+  &.similar  { background: rgba(245,158,11,.15); color: var(--color-accent-gold); }
+  &.duplicate { background: rgba(244,63,94,.15); color: var(--color-accent-hot); }
+}
+
+// ── Scrollbar ─────────────────────────────────────────────────────────────────
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
