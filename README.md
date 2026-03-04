@@ -1,4 +1,88 @@
-# Sound Competition — Modern Mobile-First App Plan
+# Sound Competition
+
+> A Swiss-system beat battle platform where sound engineers compete, collaborate, get inspired, and interconnect.
+
+## Live Demo
+
+**[Open Sound Competition Demo](https://YOUR_GITHUB_USERNAME.github.io/Sound_Competition/)**
+
+Click any demo card on the login page to instantly log in — no registration required.
+
+| Demo Account | Email | Password | Style |
+|---|---|---|---|
+| 🎛️ Beat Master | beatmaster@demo.com | demo1234 | Trap / Hip-Hop |
+| 🌙 Lo-Fi Luna | luna@demo.com | demo1234 | Lo-Fi / Jazz |
+| 🎸 Bass Line King | bass@demo.com | demo1234 | DnB / Electronic |
+
+**[Interactive API Docs (Swagger)](https://sound-competition-api.onrender.com/api/docs)**
+
+---
+
+## Deployment
+
+### Frontend → GitHub Pages
+
+The Angular app auto-deploys on every push to `main` via GitHub Actions.
+
+**One-time setup:**
+1. Go to **Settings → Pages → Source** → select `GitHub Actions`
+2. Go to **Settings → Variables → Actions** → add `BACKEND_API_URL` = `https://sound-competition-api.onrender.com`
+3. Push to `main` — the workflow builds and deploys automatically
+
+### Backend → Render.com
+
+Uses the `render.yaml` Blueprint for one-click deployment of FastAPI + Celery worker.
+
+**Requires free accounts at:**
+- [Neon.tech](https://neon.tech) — PostgreSQL 16 with pgvector (free tier)
+- [Upstash](https://upstash.com) — Redis (free tier, 10k commands/day)
+- [Cloudinary](https://cloudinary.com) — Audio/image storage (free tier)
+- [Render.com](https://render.com) — Docker hosting (free tier)
+
+**Deploy steps:**
+1. At render.com: **New → Blueprint** → connect this repo
+2. Set manual env vars in the Render dashboard:
+   - `DATABASE_URL` — from Neon (with pgvector enabled)
+   - `DATABASE_URL_SYNC` — same host, postgres:// scheme (no +asyncpg)
+   - `REDIS_URL`, `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` — from Upstash
+   - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+   - `CORS_ORIGINS` — `'["https://YOUR_GITHUB_USERNAME.github.io"]'`
+3. On first deploy, Alembic runs migrations automatically
+4. `DEMO_MODE=true` seeds the demo users and tournaments on startup
+
+---
+
+## Local Development
+
+```bash
+# Clone and start all services
+git clone https://github.com/YOUR_USERNAME/Sound_Competition.git
+cd Sound_Competition
+cp .env.example .env   # fill in your credentials
+docker compose up --build
+```
+
+| Service | URL |
+|---|---|
+| Angular frontend | http://localhost:4200 |
+| FastAPI backend | http://localhost:8000 |
+| API docs | http://localhost:8000/api/docs |
+| PostgreSQL | localhost:5432 |
+| Redis | localhost:6379 |
+
+---
+
+## CI / CD
+
+| Workflow | Trigger | Action |
+|---|---|---|
+| `ci.yml` | Every push / PR | Run backend pytest (all 8 Swiss algorithm tests + auth tests) + Angular type-check build |
+| `deploy-pages.yml` | Push to `main` | Build Angular with production API URL → deploy to GitHub Pages |
+
+---
+
+## Architecture
+
 
 ## Context
 

@@ -1,0 +1,83 @@
+# Render.com Blueprint — Sound Competition
+# ----------------------------------------
+# One-click deployment for the full stack.
+#
+# BEFORE DEPLOYING — set these manually in the Render dashboard
+# after connecting this blueprint, since they contain secrets:
+#
+#   REDIS_URL          → from Upstash (https://upstash.com) free tier
+#   DATABASE_URL       → from Neon.tech (https://neon.tech) free tier (has pgvector)
+#                        Override the auto-generated Render PG URL with the Neon one.
+#   CLOUDINARY_CLOUD_NAME
+#   CLOUDINARY_API_KEY
+#   CLOUDINARY_API_SECRET
+#
+# Also update CORS_ORIGINS with your actual GitHub Pages URL:
+#   '["https://YOUR_GITHUB_USERNAME.github.io"]'
+
+services:
+  # ── FastAPI Web Service ─────────────────────────────────────────────────────
+  - type: web
+    name: sound-competition-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEMO_MODE
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true
+      # CORS: update with your GitHub Pages origin
+      - key: CORS_ORIGINS
+        value: '["https://YOUR_GITHUB_USERNAME.github.io", "https://sound-competition-api.onrender.com"]'
+      # Database: use Neon.tech URL for pgvector support
+      - key: DATABASE_URL
+        sync: false   # set manually from Neon dashboard
+      - key: DATABASE_URL_SYNC
+        sync: false   # set manually (same host, no +asyncpg driver prefix)
+      - key: REDIS_URL
+        sync: false   # set manually from Upstash dashboard
+      - key: CELERY_BROKER_URL
+        sync: false   # same as REDIS_URL but database index 1 (e.g. redis://...@upstash.io:port/1)
+      - key: CELERY_RESULT_BACKEND
+        sync: false   # same as REDIS_URL but database index 2
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "30"
+
+  # ── Celery Background Worker ────────────────────────────────────────────────
+  - type: worker
+    name: sound-competition-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    startCommand: celery -A app.worker worker --loglevel=info --concurrency=2
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: CELERY_BROKER_URL
+        sync: false
+      - key: CELERY_RESULT_BACKEND
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

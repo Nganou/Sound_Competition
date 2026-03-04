@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     # App
     app_env: str = "development"
+    demo_mode: bool = False
     frontend_url: str = "http://localhost:4200"
     cors_origins: str = '["http://localhost:4200"]'
 

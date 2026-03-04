@@ -19,6 +19,16 @@ async def lifespan(app: FastAPI):
     from app.db.base import engine
     async with engine.begin():
         pass
+
+    # Seed demo data if DEMO_MODE=true (idempotent — safe to run every startup)
+    if settings.demo_mode:
+        try:
+            from app.db.seed import run_seed
+            await run_seed()
+        except Exception as exc:  # noqa: BLE001
+            # Never crash the server if seeding fails (e.g. migration not yet run)
+            print(f"[seed] Warning: demo seed failed — {exc}")
+
     yield
     # Shutdown: dispose engine
     await engine.dispose()
@@ -50,4 +60,4 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/health", tags=["health"])
 async def health():
-    return {"status": "ok", "env": settings.app_env}
+    return {"status": "ok", "env": settings.app_env, "demo": settings.demo_mode}
