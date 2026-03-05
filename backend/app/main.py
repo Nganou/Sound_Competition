@@ -15,10 +15,14 @@ limiter = Limiter(key_func=get_remote_address)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: verify DB connectivity
+    # Startup: verify DB connectivity (non-fatal — don't crash the server if DB
+    # isn't reachable yet; individual requests will fail with a clear error instead)
     from app.db.base import engine
-    async with engine.begin():
-        pass
+    try:
+        async with engine.begin():
+            pass
+    except Exception as exc:  # noqa: BLE001
+        print(f"[startup] Warning: DB connectivity check failed — {exc}")
 
     # Seed demo data if DEMO_MODE=true (idempotent — safe to run every startup)
     if settings.demo_mode:
