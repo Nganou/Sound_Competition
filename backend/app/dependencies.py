@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, Annotated
+from typing import AsyncGenerator, Annotated, Optional
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
@@ -12,6 +12,7 @@ from app.db.models.user import User
 from app.core.security import decode_token
 
 bearer_scheme = HTTPBearer()
+bearer_scheme_optional = HTTPBearer(auto_error=False)
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -49,6 +50,31 @@ async def get_current_user(
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+async def get_current_user_optional(
+    credentials: Annotated[Optional[HTTPAuthorizationCredentials], Depends(bearer_scheme_optional)],
+    db: DbDep,
+) -> Optional[User]:
+    if credentials is None:
+        return None
+    try:
+        payload = decode_token(credentials.credentials)
+        if payload.get("type") != "access":
+            return None
+        user_id: str = payload.get("sub")
+        if not user_id:
+            return None
+    except JWTError:
+        return None
+    result = await db.execute(select(User).where(User.id == UUID(user_id)))
+    user = result.scalar_one_or_none()
+    if user is None or not user.is_active:
+        return None
+    return user
+
+
+CurrentUserOptional = Annotated[Optional[User], Depends(get_current_user_optional)]
 
 
 def pagination(skip: int = 0, limit: int = 20) -> dict:

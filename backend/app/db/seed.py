@@ -207,16 +207,15 @@ async def _seed(session: AsyncSession) -> None:
             track = Track(
                 id=uuid.uuid4(),
                 title=t["title"],
-                owner_id=owner.id,
+                artist_id=owner.id,
                 genre=t.get("genre"),
                 bpm=t.get("bpm"),
-                duration=t.get("duration", 180),
+                duration_seconds=t.get("duration", 180),
                 audio_url=t["audio_url"],
                 waveform_url=None,  # no Cloudinary in demo seed
                 cloudinary_public_id=t["cloudinary_public_id"],
                 play_count=0,
                 is_public=True,
-                fingerprint_status="pending",
                 created_at=now - timedelta(days=len(track_objs[username]) + 1),
                 updated_at=now,
             )
@@ -271,9 +270,9 @@ async def _seed(session: AsyncSession) -> None:
         ("lofi_luna", 1, track_objs["lofi_luna"][0], 3, 1, 1, 0),
         ("bassline_king", 2, track_objs["bassline_king"][0], 3, 1, 1, 0),
     ]
+    user_ids_active = []
     for username, rank, track, score, wins, losses, draws in standings:
         p = TournamentParticipant(
-            id=uuid.uuid4(),
             tournament_id=tournament_active.id,
             user_id=user_objs[username].id,
             track_id=track.id,
@@ -284,10 +283,10 @@ async def _seed(session: AsyncSession) -> None:
             matches_played=wins + losses + draws,
             is_eliminated=False,
             is_bye=False,
-            joined_at=now - timedelta(days=8),
         )
         session.add(p)
         participants_active.append(p)
+        user_ids_active.append(user_objs[username].id)
 
     await session.flush()
 
@@ -298,10 +297,9 @@ async def _seed(session: AsyncSession) -> None:
         round_number=1,
         track_a_id=track_objs["beatmaster"][0].id,
         track_b_id=track_objs["lofi_luna"][0].id,
-        participant_a_id=participants_active[0].id,
-        participant_b_id=participants_active[1].id,
-        result_status="completed",
-        winner_id=participants_active[0].id,
+        participant_a_id=user_ids_active[0],
+        participant_b_id=user_ids_active[1],
+        result_status="track_a_wins",
         vote_a_count=24,
         vote_b_count=11,
         voting_closes_at=now - timedelta(days=3),
@@ -317,10 +315,9 @@ async def _seed(session: AsyncSession) -> None:
         round_number=2,
         track_a_id=track_objs["beatmaster"][0].id,
         track_b_id=track_objs["bassline_king"][0].id,
-        participant_a_id=participants_active[0].id,
-        participant_b_id=participants_active[2].id,
+        participant_a_id=user_ids_active[0],
+        participant_b_id=user_ids_active[2],
         result_status="pending",
-        winner_id=None,
         vote_a_count=8,
         vote_b_count=5,
         voting_closes_at=now + timedelta(days=2),
@@ -351,13 +348,11 @@ async def _seed(session: AsyncSession) -> None:
 
     # lofi_luna already joined her own tournament
     session.add(TournamentParticipant(
-        id=uuid.uuid4(),
         tournament_id=tournament_open.id,
         user_id=user_objs["lofi_luna"].id,
         track_id=track_objs["lofi_luna"][1].id,
         score=0, wins=0, losses=0, draws=0, matches_played=0,
         is_eliminated=False, is_bye=False,
-        joined_at=now - timedelta(hours=6),
     ))
 
 
