@@ -63,7 +63,7 @@ services:
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: free
-    startCommand: celery -A app.worker worker --loglevel=info --concurrency=2
+    dockerCommand: celery -A app.worker worker --loglevel=info --concurrency=2
     envVars:
       - key: APP_ENV
         value: production

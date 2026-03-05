@@ -72,6 +72,31 @@ docker compose up --build
 
 ---
 
+## Quick Public URL (Local Tunnel)
+
+Share a running local instance publicly without any hosting account. Requires the app running via `docker compose up`.
+
+```bash
+# Install once
+npm install -g localtunnel
+
+# In two separate terminals — each gives a public HTTPS URL
+lt --port 8000   # → backend, e.g. https://abc123.loca.lt
+lt --port 4200   # → frontend, e.g. https://xyz789.loca.lt
+```
+
+> **First-visit prompt:** localtunnel shows a splash page asking you to confirm the tunnel IP. Click **"Click to continue"** to reach the app.
+
+The tunnel URLs are temporary (change each session). To point the Angular dev server at the tunnelled backend, set the environment:
+
+```bash
+BACKEND_API_URL=https://abc123.loca.lt docker compose up
+```
+
+Or open the backend tunnel URL directly at `/api/docs` for the Swagger UI.
+
+---
+
 ## CI / CD
 
 | Workflow | Trigger | Action |
