@@ -21,6 +21,7 @@ dependencies = [
     "python-multipart>=0.0.9",
     # Config
     "pydantic-settings>=2.3.0",
+    "pydantic[email]>=2.0.0",
     # Redis / Celery
     "redis>=5.0.6",
     "celery>=5.4.0",
