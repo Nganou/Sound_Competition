@@ -37,7 +37,7 @@ jobs:
 
       # Replace __BACKEND_API_URL__ placeholder with the actual Render.com URL.
       # Set BACKEND_API_URL in: GitHub repo → Settings → Variables → Actions
-      # Example value: https://sound-competition-api.onrender.com
+      # Example value: https://resono.onrender.com
       - name: Inject backend API URL
         run: |
           sed -i "s|__BACKEND_API_URL__|${{ vars.BACKEND_API_URL }}|g" \
@@ -51,7 +51,7 @@ jobs:
       # GitHub Pages returns 404 for any URL that is not a real file.
       # Copying index.html → 404.html lets Angular's router boot on deep links.
       - name: Create 404.html for SPA routing
-        run: cp dist/sound-competition/browser/index.html dist/sound-competition/browser/404.html
+        run: cp dist/resono/browser/index.html dist/resono/browser/404.html
         working-directory: frontend
 
       - name: Configure GitHub Pages
@@ -60,7 +60,7 @@ jobs:
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: frontend/dist/sound-competition/browser
+          path: frontend/dist/resono/browser
 
       - name: Deploy to GitHub Pages
         id: deploy

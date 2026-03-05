@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Sound Competition API",
+    title="Resono API",
     description="Swiss-system beat battle platform for sound engineers.",
     version="0.1.0",
     lifespan=lifespan,

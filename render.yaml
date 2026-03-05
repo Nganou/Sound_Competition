@@ -1,4 +1,4 @@
-# Render.com Blueprint — Sound Competition
+# Render.com Blueprint — Resono
 # ----------------------------------------
 # One-click deployment for the full stack.
 #
@@ -18,7 +18,7 @@
 services:
   # ── FastAPI Web Service ─────────────────────────────────────────────────────
   - type: web
-    name: sound-competition-api
+    name: resono-api
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
@@ -33,7 +33,7 @@ services:
         generateValue: true
       # CORS: update with your GitHub Pages origin
       - key: CORS_ORIGINS
-        value: '["https://YOUR_GITHUB_USERNAME.github.io", "https://sound-competition-api.onrender.com"]'
+        value: '["https://YOUR_GITHUB_USERNAME.github.io", "https://resono.onrender.com"]'
       # Database: use Neon.tech URL for pgvector support
       - key: DATABASE_URL
         sync: false   # set manually from Neon dashboard

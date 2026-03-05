@@ -9,7 +9,7 @@ import { RouterOutlet } from '@angular/router';
     <div class="auth-layout">
       <div class="auth-layout__brand">
         <span class="brand-icon">⚔</span>
-        <h1>Sound Competition</h1>
+        <h1>Resono</h1>
         <p>Battle. Collaborate. Inspire.</p>
       </div>
       <div class="auth-layout__form">

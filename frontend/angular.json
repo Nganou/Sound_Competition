@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sound-competition": {
+    "resono": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -24,7 +24,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/sound-competition",
+            "outputPath": "dist/resono",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -75,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sound-competition:build:production"
+              "buildTarget": "resono:build:production"
             },
             "development": {
-              "buildTarget": "sound-competition:build:development"
+              "buildTarget": "resono:build:development"
             }
           },
           "defaultConfiguration": "development",
