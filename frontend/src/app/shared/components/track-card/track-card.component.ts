@@ -1,4 +1,5 @@
 import { Component, Input, inject } from '@angular/core';
+import { UpperCasePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -8,7 +9,7 @@ import { ApiService } from '../../../core/services/api.service';
 @Component({
   selector: 'sc-track-card',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, RouterLink],
+  imports: [UpperCasePipe, MatIconModule, MatButtonModule, RouterLink],
   template: `
     <div class="sc-card track-card">
       <!-- Artist row -->

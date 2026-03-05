@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+@use '@angular/material/core/m2' as m2;
+
 // ── Design tokens ────────────────────────────────────────────────────────────
 :root {
   --color-bg-primary:      #0A0A0F;
@@ -34,8 +37,6 @@ html, body {
   overscroll-behavior: none;
 }
 
-// ── Angular Material dark theme override ──────────────────────────────────────
-@use '@angular/material' as mat;
 
 $purple-palette: (
   50:  #ede9fe, 100: #ddd6fe, 200: #c4b5fd, 300: #a78bfa,
@@ -44,9 +45,9 @@ $purple-palette: (
   contrast: (500: white, 600: white, 700: white)
 );
 
-$sc-primary:   mat.m2-define-palette(mat.$violet-palette, 500);
-$sc-accent:    mat.m2-define-palette(mat.$pink-palette, A200);
-$sc-warn:      mat.m2-define-palette(mat.$red-palette);
+$sc-primary:   mat.m2-define-palette(m2.$purple-palette, 500);
+$sc-accent:    mat.m2-define-palette(m2.$pink-palette, A200);
+$sc-warn:      mat.m2-define-palette(m2.$red-palette);
 
 $sc-dark-theme: mat.m2-define-dark-theme((
   color: (primary: $sc-primary, accent: $sc-accent, warn: $sc-warn)

@@ -77,14 +77,14 @@ interface CollabRequest {
                   @if (otherParty(req).avatar_url) {
                     <img [src]="otherParty(req).avatar_url!" [alt]="otherParty(req).display_name" class="avatar-sm" />
                   } @else {
-                    <div class="avatar-sm avatar-placeholder">
+                    <span class="avatar-sm avatar-placeholder">
                       {{ otherParty(req).display_name[0].toUpperCase() }}
-                    </div>
+                    </span>
                   }
-                  <div>
+                  <span class="user-info">
                     <span class="user-name">{{ otherParty(req).display_name }}</span>
-                    <span class="user-handle">@{{ otherParty(req).username }}</span>
-                  </div>
+                    <span class="user-handle">&#64;{{ otherParty(req).username }}</span>
+                  </span>
                 </a>
                 <span class="status-chip" [attr.data-status]="req.status">
                   {{ req.status }}

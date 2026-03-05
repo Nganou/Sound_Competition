@@ -1,0 +1,21 @@
+# Overrides local .env paths so backend/worker connect to the Docker services.
+# Also runs Alembic migrations before uvicorn starts.
+services:
+  backend:
+    environment:
+      DATABASE_URL: postgresql+asyncpg://soundcomp:soundcomp@db:5432/soundcomp
+      DATABASE_URL_SYNC: postgresql://soundcomp:soundcomp@db:5432/soundcomp
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  worker:
+    environment:
+      DATABASE_URL: postgresql+asyncpg://soundcomp:soundcomp@db:5432/soundcomp
+      DATABASE_URL_SYNC: postgresql://soundcomp:soundcomp@db:5432/soundcomp
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2

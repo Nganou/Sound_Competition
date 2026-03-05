@@ -87,7 +87,7 @@ interface SearchResults {
                 <div class="track-info">
                   <span class="track-title">{{ track.title }}</span>
                   <span class="track-meta">
-                    @{{ track.artist_username }}
+                    &#64;{{ track.artist_username }}
                     @if (track.genre) { · {{ track.genre }} }
                   </span>
                 </div>
@@ -159,7 +159,7 @@ interface SearchResults {
                   <span class="track-title">{{ track.title }}</span>
                   <span class="track-meta">
                     <a [routerLink]="['/u', track.artist_username]" class="artist-link" (click)="$event.stopPropagation()">
-                      @{{ track.artist_username }}
+                      &#64;{{ track.artist_username }}
                     </a>
                     @if (track.genre) { · {{ track.genre }} }
                     · {{ formatDuration(track.duration) }}
@@ -197,7 +197,7 @@ interface SearchResults {
                     }
                   </div>
                   <span class="user-meta">
-                    @{{ user.username }} · {{ user.track_count }} tracks · {{ formatCount(user.follower_count) }} followers
+                    &#64;{{ user.username }} · {{ user.track_count }} tracks · {{ formatCount(user.follower_count) }} followers
                   </span>
                   @if (user.bio) {
                     <span class="user-bio">{{ user.bio }}</span>
@@ -220,7 +220,7 @@ interface SearchResults {
                 <div class="t-info">
                   <span class="t-title">{{ t.title }}</span>
                   <span class="t-meta">
-                    by @{{ t.organizer_username }} · {{ t.participant_count }} participants · Round {{ t.current_round }}
+                    by &#64;{{ t.organizer_username }} · {{ t.participant_count }} participants · Round {{ t.current_round }}
                   </span>
                 </div>
                 <span class="status-chip" [attr.data-status]="t.status">{{ t.status }}</span>
@@ -395,7 +395,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   playTrack(track: TrackResult) {
-    this.playerStore.play({ id: track.id, title: track.title, artist: track.artist_display_name, audioUrl: track.audio_url, waveformUrl: track.waveform_url ?? undefined });
+    this.playerStore.play({ id: track.id, title: track.title, artist: { username: track.artist_username, display_name: track.artist_display_name }, audio_url: track.audio_url, waveform_url: track.waveform_url ?? null });
   }
 
   formatCount(n: number): string {

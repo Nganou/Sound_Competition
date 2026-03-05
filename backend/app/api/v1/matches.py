@@ -2,7 +2,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select, update
 
-from app.dependencies import DbDep, CurrentUser, Pagination
+from app.dependencies import DbDep, CurrentUser, CurrentUserOptional, Pagination
 from app.db.models.match import Match, BattleVote, MatchResultStatus
 from app.db.models.tournament import TournamentParticipant
 from app.schemas.match import MatchPublic, VoteRequest, ReportMatchRequest
@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/{match_id}", response_model=MatchPublic)
-async def get_match(match_id: uuid.UUID, db: DbDep, current_user: CurrentUser | None = None):
+async def get_match(match_id: uuid.UUID, db: DbDep, current_user: CurrentUserOptional):
     match = await _get_or_404(match_id, db)
     user_vote = None
     if current_user:

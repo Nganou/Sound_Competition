@@ -85,7 +85,7 @@ interface UserProfile {
             <div class="form-group">
               <label class="form-label">Username</label>
               <div class="input-prefix-wrapper">
-                <span class="input-prefix">@</span>
+                <span class="input-prefix">&#64;</span>
                 <input
                   type="text"
                   formControlName="username"

@@ -2,7 +2,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select, update
 
-from app.dependencies import DbDep, CurrentUser, Pagination
+from app.dependencies import DbDep, CurrentUser, CurrentUserOptional, Pagination
 from app.db.models.track import Track, Tag, TrackTag, TrackLike
 from app.db.models.fingerprint import TrackFingerprint, FingerprintStatus
 from app.schemas.track import TrackCreate, TrackUpdate, TrackPublic, TrackDetail, UploadParams
@@ -64,7 +64,7 @@ async def create_track(body: TrackCreate, current_user: CurrentUser, db: DbDep):
 
 
 @router.get("/{track_id}", response_model=TrackDetail)
-async def get_track(track_id: uuid.UUID, db: DbDep, current_user: CurrentUser | None = None):
+async def get_track(track_id: uuid.UUID, db: DbDep, current_user: CurrentUserOptional):
     track = await _get_track_or_404(track_id, db)
     fp = await db.execute(select(TrackFingerprint).where(TrackFingerprint.track_id == track_id))
     fingerprint = fp.scalar_one_or_none()
