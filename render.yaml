@@ -42,9 +42,9 @@ services:
       - key: REDIS_URL
         sync: false   # set manually from Upstash dashboard
       - key: CELERY_BROKER_URL
-        sync: false   # same as REDIS_URL but database index 1 (e.g. redis://...@upstash.io:port/1)
+        sync: false   # same as REDIS_URL — Upstash free tier only supports DB 0, use rediss://...@upstash.io:port/0
       - key: CELERY_RESULT_BACKEND
-        sync: false   # same as REDIS_URL but database index 2
+        sync: false   # same as REDIS_URL — use the same URL as CELERY_BROKER_URL (DB 0)
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY
