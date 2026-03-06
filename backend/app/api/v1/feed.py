@@ -16,7 +16,7 @@ from app.schemas.feed import FeedResponse, SimilarTrackResult
 router = APIRouter()
 
 
-@router.get("/", response_model=FeedResponse)
+@router.get("", response_model=FeedResponse)
 async def get_feed(current_user: CurrentUser, db: DbDep):
     trending = await _trending_tracks(db, limit=10)
     active_tournaments = await _active_tournaments(db, limit=5)

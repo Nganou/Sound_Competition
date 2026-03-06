@@ -18,7 +18,7 @@ async def get_upload_params(current_user: CurrentUser):
     return get_signed_upload_params(folder=f"tracks/{current_user.id}")
 
 
-@router.post("/", response_model=TrackDetail, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=TrackDetail, status_code=status.HTTP_201_CREATED)
 async def create_track(body: TrackCreate, current_user: CurrentUser, db: DbDep):
     track = Track(
         artist_id=current_user.id,
