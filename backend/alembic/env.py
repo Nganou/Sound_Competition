@@ -42,9 +42,12 @@ def do_run_migrations(connection: Connection) -> None:
 
 async def run_async_migrations() -> None:
     cfg = config.get_section(config.config_ini_section, {})
-    cfg["sqlalchemy.url"] = settings.database_url
+    from app.db.base import _build_engine_args
+    clean_url, connect_args = _build_engine_args(settings.database_url)
+    cfg["sqlalchemy.url"] = clean_url
     connectable = async_engine_from_config(
-        cfg, prefix="sqlalchemy.", poolclass=pool.NullPool
+        cfg, prefix="sqlalchemy.", poolclass=pool.NullPool,
+        connect_args=connect_args,
     )
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
