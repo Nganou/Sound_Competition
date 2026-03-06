@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap, catchError, EMPTY } from 'rxjs';
 import { AuthStore } from '../store/auth.store';
+import { environment } from '../../../environments/environment';
 
 export interface LoginRequest { email: string; password: string; }
 export interface RegisterRequest { username: string; email: string; password: string; display_name?: string; }
@@ -16,18 +17,19 @@ export class AuthService {
 
   private readonly TOKEN_KEY = 'sc_access';
   private readonly REFRESH_KEY = 'sc_refresh';
+  private readonly base = `${environment.apiUrl}/api/v1/auth`;
 
   getToken(): string | null { return localStorage.getItem(this.TOKEN_KEY); }
   getRefreshToken(): string | null { return localStorage.getItem(this.REFRESH_KEY); }
 
   register(body: RegisterRequest) {
-    return this.http.post<TokenResponse>('/api/v1/auth/register', body).pipe(
+    return this.http.post<TokenResponse>(`${this.base}/register`, body).pipe(
       tap(tokens => this._storeTokens(tokens))
     );
   }
 
   login(body: LoginRequest) {
-    return this.http.post<TokenResponse>('/api/v1/auth/login', body).pipe(
+    return this.http.post<TokenResponse>(`${this.base}/login`, body).pipe(
       tap(tokens => this._storeTokens(tokens))
     );
   }
@@ -35,7 +37,7 @@ export class AuthService {
   refreshToken() {
     const refresh_token = this.getRefreshToken();
     if (!refresh_token) return EMPTY;
-    return this.http.post<TokenResponse>('/api/v1/auth/refresh', { refresh_token }).pipe(
+    return this.http.post<TokenResponse>(`${this.base}/refresh`, { refresh_token }).pipe(
       tap(tokens => this._storeTokens(tokens)),
       catchError(() => { this.logout(); return EMPTY; })
     );
