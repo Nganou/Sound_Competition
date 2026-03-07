@@ -40,7 +40,9 @@ async def _run_fingerprint(track_id: str, audio_url: str):
         TrackFingerprint, FingerprintStatus, SimilarityReport, SimilarityReportType,
     )
 
-    engine = create_async_engine(settings.database_url, echo=False)
+    from app.db.base import _build_engine_args
+    _db_url, _connect_args = _build_engine_args(settings.database_url)
+    engine = create_async_engine(_db_url, echo=False, connect_args=_connect_args)
     factory = async_sessionmaker(engine, expire_on_commit=False)
 
     async with httpx.AsyncClient(timeout=60) as client:

@@ -14,7 +14,7 @@ from app.schemas.match import MatchPublic
 router = APIRouter()
 
 
-@router.post("/", response_model=TournamentPublic, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=TournamentPublic, status_code=status.HTTP_201_CREATED)
 async def create_tournament(body: TournamentCreate, current_user: CurrentUser, db: DbDep):
     t = Tournament(
         organizer_id=current_user.id,
@@ -30,7 +30,7 @@ async def create_tournament(body: TournamentCreate, current_user: CurrentUser, d
     return await _tournament_public(t, db)
 
 
-@router.get("/", response_model=list[TournamentPublic])
+@router.get("", response_model=list[TournamentPublic])
 async def list_tournaments(db: DbDep, pagination: Pagination, status_filter: str | None = None):
     q = select(Tournament)
     if status_filter:

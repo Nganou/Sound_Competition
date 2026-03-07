@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 export interface UserProfile {
   id: string;
@@ -24,7 +25,7 @@ export const AuthStore = signalStore(
   withMethods((store, http = inject(HttpClient)) => ({
     loadCurrentUser() {
       patchState(store, { isLoading: true });
-      http.get<UserProfile>('/api/v1/users/me').subscribe({
+      http.get<UserProfile>(`${environment.apiUrl}/api/v1/users/me`).subscribe({
         next: user => patchState(store, { user, isLoading: false }),
         error: ()  => patchState(store, { user: null, isLoading: false }),
       });

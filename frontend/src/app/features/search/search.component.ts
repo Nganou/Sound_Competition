@@ -363,8 +363,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   popularTags = signal<string[]>(['hiphop', 'trap', 'lofi', 'electronic', 'rnb', 'jazz', 'afrobeats', 'drill', 'soul', 'ambient', 'house', 'reggaeton']);
 
   ngOnInit() {
-    this.api.get<{ tracks: TrackResult[] }>('/feed?limit=10').subscribe({
-      next: (res) => { this.trendingTracks.set(res.tracks ?? []); this.trendingLoading.set(false); },
+    this.api.get<TrackResult[]>('/feed/trending', { limit: 10 }).subscribe({
+      next: (res) => { this.trendingTracks.set(res ?? []); this.trendingLoading.set(false); },
       error: () => this.trendingLoading.set(false),
     });
 

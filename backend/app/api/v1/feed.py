@@ -16,7 +16,7 @@ from app.schemas.feed import FeedResponse, SimilarTrackResult
 router = APIRouter()
 
 
-@router.get("/", response_model=FeedResponse)
+@router.get("", response_model=FeedResponse)
 async def get_feed(current_user: CurrentUser, db: DbDep):
     trending = await _trending_tracks(db, limit=10)
     active_tournaments = await _active_tournaments(db, limit=5)
@@ -46,6 +46,7 @@ async def search_tracks(q: str, db: DbDep, pagination: Pagination):
     """Full-text search across track titles and descriptions."""
     rows = await db.execute(
         select(Track)
+        .options(selectinload(Track.artist))
         .where(
             Track.is_public == True,
             text("to_tsvector('english', title || ' ' || coalesce(description,'')) @@ plainto_tsquery('english', :q)")
@@ -89,6 +90,7 @@ async def _trending_tracks(db, limit: int = 10, skip: int = 0) -> list[Track]:
     week_ago = datetime.now(timezone.utc) - timedelta(days=7)
     rows = await db.execute(
         select(Track)
+        .options(selectinload(Track.artist))
         .where(Track.is_public == True, Track.created_at >= week_ago)
         .order_by((Track.play_count * 0.3 + Track.like_count * 0.7).desc())
         .offset(skip)
@@ -110,6 +112,7 @@ async def _active_tournaments(db, limit: int = 5) -> list[Tournament]:
 async def _following_feed(user_id, db, limit: int = 10, skip: int = 0) -> list[Track]:
     rows = await db.execute(
         select(Track)
+        .options(selectinload(Track.artist))
         .join(Follow, Follow.following_id == Track.artist_id)
         .where(Follow.follower_id == user_id, Track.is_public == True)
         .order_by(Track.created_at.desc())
